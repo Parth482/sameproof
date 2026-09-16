@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
 
 # next.js
 /.next/
@@ -30,8 +32,15 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+.env
+.env.local
+.env.*.local
+<<<<<<< HEAD
+
+# internal docs — not for public repo
+/docs
+=======
+>>>>>>> 2d0861c997f31a61693e775486d3b45b7b618e3c
 
 # vercel
 .vercel

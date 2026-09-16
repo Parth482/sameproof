@@ -1,0 +1,14 @@
+{
+  "name": "SameProof",
+  "short_name": "SameProof",
+  "description": "Explainable monitor price-match evidence",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "share_target": {
+    "action": "/offer-dock",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  }
+}
