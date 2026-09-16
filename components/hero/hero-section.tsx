@@ -31,7 +31,7 @@ const HOLD_MS = 3200;
 function useTextScramble(phrases: string[]) {
   const [display, setDisplay] = useState(phrases[0]);
   const indexRef = useRef(0);
-  const rafRef = useRef<ReturnType<typeof setTimeout>>();
+  const rafRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const scrambleTo = useCallback((target: string) => {
     let frame = 0;
