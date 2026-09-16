@@ -107,10 +107,10 @@ export function IdentityBridgeClient({ comparisonId }: { comparisonId: string })
 
   const differences = identity?.commercialChecks.filter((check) => check.result !== "pass") ?? [];
   const summary = identity?.status === "exact"
-    ? "The commercial identity evidence lines up. These appear to be the same product."
+    ? "Model, barcode, region, and condition all match between the two offers."
     : identity?.status === "conflict"
-      ? `${differences.filter((item) => item.result === "fail").length} identity difference${differences.filter((item) => item.result === "fail").length === 1 ? "" : "s"} block an exact match.`
-      : `${differences.filter((item) => item.result === "unknown").length} proof gap${differences.filter((item) => item.result === "unknown").length === 1 ? "" : "s"} must be checked before identity is certain.`;
+      ? `${differences.filter((item) => item.result === "fail").length} difference${differences.filter((item) => item.result === "fail").length === 1 ? "" : "s"} found. Even similar products aren\u2019t the same if a key detail differs.`
+      : `${differences.filter((item) => item.result === "unknown").length} detail${differences.filter((item) => item.result === "unknown").length === 1 ? " is" : "s are"} missing. Go back to evidence and fill ${differences.filter((item) => item.result === "unknown").length === 1 ? "it" : "them"} in.`;
 
   return <div className="space-y-6">
     {!online && <OfflineNotice />}
@@ -119,30 +119,30 @@ export function IdentityBridgeClient({ comparisonId }: { comparisonId: string })
     <section className="surface overflow-hidden">
       <div className="grid grid-cols-[minmax(0,1fr)_3rem_minmax(0,1fr)] items-stretch border-b border-slate-200 bg-slate-50">
         <OfferHeading label="Product I want" title={offers[0].title} seller={offers[0].seller} tone="violet" />
-        <div className="grid place-items-center bg-white"><span className="h-full w-px bg-slate-300" aria-hidden="true" /></div>
+        <div className="grid place-items-center bg-white"><span className="h-full w-px bg-slate-300" aria-hidden="true" /><span className="absolute rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-500">vs</span></div>
         <OfferHeading label="Lower-price offer" title={offers[1].title} seller={offers[1].seller} tone="blue" alignRight />
       </div>
       <div className="p-4 sm:p-6">
-        <div><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-500">Commercial identity</p><div className="mt-2 flex flex-wrap items-center gap-2"><h2 className="text-xl font-semibold">{identity?.status === "exact" ? "Yes — the products match" : identity?.status === "conflict" ? "No — a product detail differs" : identity?.status === "unknown" ? "More proof is needed" : "Comparing the products"}</h2>{identity && <IdentityBadge status={identity.status} />}</div></div>
+        <div><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-500">Product match</p><div className="mt-2 flex flex-wrap items-center gap-2"><h2 className="text-xl font-semibold">{identity?.status === "exact" ? "Same product confirmed" : identity?.status === "conflict" ? "These are different products" : identity?.status === "unknown" ? "We need more details to be sure" : "Checking now…"}</h2>{identity && <IdentityBadge status={identity.status} />}</div></div>
 
         {!identity && <LoadingState label="Comparing the visible identity evidence" />}
         {identity && <div className="mt-5">
-          <div className={`rounded-2xl border p-4 ${identity.status === "exact" ? "border-emerald-200 bg-emerald-50 text-emerald-950" : identity.status === "conflict" ? "border-rose-200 bg-rose-50 text-rose-950" : "border-amber-200 bg-amber-50 text-amber-950"}`}><p className="font-semibold">{summary}</p><p className="mt-1 text-sm opacity-80">Functional similarity never overrides a model, barcode, region, condition, warranty or bundle difference.</p></div>
-          {differences[0] && <div className="mt-4"><p className="mb-2 text-xs font-bold uppercase tracking-[.12em] text-slate-500">First detail to resolve</p><div className="overflow-hidden rounded-2xl border border-slate-200"><BridgeRow rule={differences[0]} /></div></div>}
-          <details className="group mt-4 rounded-2xl border border-slate-200 bg-slate-50"><summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-semibold"><span>See all identity checks</span><span className="rounded-full bg-white px-2.5 py-1 text-xs text-slate-600 group-open:text-blue-700">{identity.commercialChecks.length}</span></summary><div className="divide-y divide-slate-200 border-t border-slate-200 px-4">{identity.commercialChecks.map((rule) => <RuleRow key={rule.code} rule={rule} compact />)}</div></details>
-          <details className="group mt-3 rounded-2xl border border-slate-200 bg-slate-50"><summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-semibold"><span>Similar specifications</span><span className="text-xs font-medium text-slate-500">Do not decide eligibility</span></summary><div className="border-t border-slate-200 px-4 pb-2"><p className="mt-3 text-sm leading-6 text-slate-600">These details explain how the monitors compare, but cannot turn a different product into an exact match.</p><div className="mt-2 divide-y divide-slate-200">{identity.functionalComparison.map((rule) => <RuleRow key={rule.code} rule={rule} compact />)}</div></div></details>
-          <details className="mt-2 px-1"><summary className="flex min-h-11 cursor-pointer items-center text-xs font-semibold text-slate-500">How this check runs</summary><p className="mt-1 flex items-start gap-2 text-xs leading-5 text-slate-500"><Cpu size={15} className="mt-0.5 shrink-0" />A Web Worker compares identity without blocking the interface; the server independently applies the retailer policy.</p></details>
+          <div className={`rounded-2xl border p-4 ${identity.status === "exact" ? "border-emerald-200 bg-emerald-50 text-emerald-950" : identity.status === "conflict" ? "border-rose-200 bg-rose-50 text-rose-950" : "border-amber-200 bg-amber-50 text-amber-950"}`}><p className="font-semibold">{summary}</p><p className="mt-1 text-sm opacity-80">Specs alone never override a model, barcode, region, condition, warranty or bundle difference.</p></div>
+          {differences[0] && <div className="mt-4"><p className="mb-2 text-xs font-bold uppercase tracking-[.12em] text-slate-500">What&apos;s blocking the match</p><div className="overflow-hidden rounded-2xl border border-slate-200"><BridgeRow rule={differences[0]} /></div></div>}
+          <details className="group mt-4 rounded-2xl border border-slate-200 bg-slate-50"><summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-semibold"><span>See all checks</span><span className="rounded-full bg-white px-2.5 py-1 text-xs text-slate-600 group-open:text-blue-700">{identity.commercialChecks.length}</span></summary><div className="divide-y divide-slate-200 border-t border-slate-200 px-4">{identity.commercialChecks.map((rule) => <RuleRow key={rule.code} rule={rule} compact />)}</div></details>
+          <details className="group mt-3 rounded-2xl border border-slate-200 bg-slate-50"><summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-semibold"><span>Specs comparison</span><span className="text-xs font-medium text-slate-500">These don&apos;t affect the result</span></summary><div className="border-t border-slate-200 px-4 pb-2"><p className="mt-3 text-sm leading-6 text-slate-600">These details show how the products compare but don&apos;t affect the match result.</p><div className="mt-2 divide-y divide-slate-200">{identity.functionalComparison.map((rule) => <RuleRow key={rule.code} rule={rule} compact />)}</div></div></details>
+          <p className="mt-4 flex items-start gap-2 text-[11px] leading-5 text-slate-400"><Cpu size={14} className="mt-0.5 shrink-0" />A background check compares identity without blocking the page; the server runs its own independent check.</p>
         </div>}
       </div>
     </section>
 
     <section ref={resultRef} tabIndex={-1} className="surface p-5 outline-none sm:p-6" aria-live="polite">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.13em] text-slate-500">Retailer policy</p><h2 className="mt-1 text-xl font-semibold">{decision ? "Eligibility result" : "Checking eligibility now"}</h2><p className="mt-1 text-sm leading-6 text-slate-600">SameProof checks identity, stock, seller, delivered price and freshness automatically.</p></div>{decision ? <DecisionBadge status={decision.status} large /> : <span className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-blue-50 px-4 text-sm font-bold text-blue-800"><LoaderCircle className="animate-spin" size={18} />{busy ? "Checking…" : "Starting…"}</span>}</div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.13em] text-slate-500">Store policy</p><h2 className="mt-1 text-xl font-semibold">{decision ? "Does this qualify?" : "Checking if it qualifies"}</h2><p className="mt-1 text-sm leading-6 text-slate-600">We check the product, price, stock, seller, and how recent the info is.</p></div>{decision ? <DecisionBadge status={decision.status} large /> : <span className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-blue-50 px-4 text-sm font-bold text-blue-800"><LoaderCircle className="animate-spin" size={18} />{busy ? "Checking…" : "Starting…"}</span>}</div>
       {error && <div className="mt-4"><ErrorState message={error.message} requestId={error.requestId} onRetry={() => runServerDecision()} /></div>}
       {decision && <div className="mt-5 border-t border-slate-200 pt-5"><p className="text-sm font-semibold">{decisionMessage(decision)}</p><div className="mt-3 grid gap-2">{decision.policyChecks.filter((item) => item.result !== "pass").map((rule) => <RuleRow key={rule.code} rule={rule} />)}</div>{decision.policyChecks.every((item) => item.result === "pass") && <p className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-900">All {decision.policyChecks.length} required policy checks passed.</p>}</div>}
     </section>
 
-    <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between"><Link href={`/evidence-lens/${comparisonId}`} className="button-secondary"><ArrowLeft size={17} />Back to evidence</Link>{decision && <Link className="button-primary" href={decision.status === "verified" || decision.status === "likely" ? `/passport/${comparisonId}` : `/near-miss/${comparisonId}`}>{decision.status === "verified" || decision.status === "likely" ? "Create live passport" : "See the smallest safe change"}<ArrowRight size={17} /></Link>}</div>
+    <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between"><Link href={`/evidence-lens/${comparisonId}`} className="button-secondary"><ArrowLeft size={17} />Back to evidence</Link>{decision && <Link className="button-primary" href={decision.status === "verified" || decision.status === "likely" ? `/passport/${comparisonId}` : `/near-miss/${comparisonId}`}>{decision.status === "verified" || decision.status === "likely" ? "Create your proof" : "See the closest option"}<ArrowRight size={17} /></Link>}</div>
   </div>;
 }
 
@@ -165,8 +165,8 @@ function formatValue(value: unknown) {
 }
 
 function decisionMessage(decision: Decision) {
-  if (decision.status === "verified") return "Verified: the reviewed evidence meets every required rule right now.";
-  if (decision.status === "likely") return "Likely: the required rules pass, but final approval includes retailer discretion.";
-  if (decision.status === "uncertain") return "Uncertain: one or more required facts are still missing or unreviewed.";
-  return "Excluded: at least one required rule is not met. SameProof can show the closest honest alternative.";
+  if (decision.status === "verified") return "All checks passed — this qualifies for a price match right now.";
+  if (decision.status === "likely") return "Looking good — checks pass, but the store makes the final call.";
+  if (decision.status === "uncertain") return "Some details are missing — go back and fill them in for a clear answer.";
+  return "This doesn\u2019t qualify right now — but we can show the closest option that does.";
 }

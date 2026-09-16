@@ -7,5 +7,5 @@ export const metadata: Metadata = { title: "Live Price-Match Passport" };
 
 export default async function PassportPage({ params }: { params: Promise<{ comparisonId: string }> }) {
   const { comparisonId } = await params;
-  return <JourneyShell stage="passport" comparisonId={comparisonId} eyebrow="Ready to present" title="Your price-match passport" description="Show the outcome at the counter. The detailed proof stays one tap away."><PassportClient comparisonId={comparisonId} /></JourneyShell>;
+  return <JourneyShell stage="passport" comparisonId={comparisonId} eyebrow="Ready to use" title="Your price-match proof" description="Show this at the counter. The full details are one tap away."><PassportClient comparisonId={comparisonId} /></JourneyShell>;
 }

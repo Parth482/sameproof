@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, ArrowLeft, ArrowRight, Check, CircleHelp, Clock3, Database, ExternalLink, Pencil, ShieldCheck, Trash2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ArrowRight, Check, CircleHelp, Clock3, Database, DollarSign, ExternalLink, Package, Pencil, ShieldCheck, Store, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -26,17 +26,17 @@ interface FieldDefinition {
 
 const fields: FieldDefinition[] = [
   { key: "manufacturerModel", label: "Model number", kind: "text", hint: "The exact model printed on the product or page", priority: "decision" },
-  { key: "gtin", label: "Barcode / GTIN", kind: "text", hint: "A matching barcode is strong identity evidence", priority: "decision" },
-  { key: "regionalSuffix", label: "Regional suffix", kind: "text", hint: "For example AU; leave blank when it is not shown", priority: "decision" },
-  { key: "priceCents", label: "Offer price", kind: "money", hint: "Australian dollars", priority: "decision" },
+  { key: "gtin", label: "Barcode", kind: "text", hint: "A matching barcode is strong identity evidence", priority: "decision" },
+  { key: "regionalSuffix", label: "Region (e.g. AU)", kind: "text", hint: "Leave blank when it is not shown", priority: "decision" },
+  { key: "priceCents", label: "Price", kind: "money", hint: "Australian dollars", priority: "decision" },
   { key: "deliveryCostCents", label: "Delivery cost", kind: "money", hint: "Use zero only when free delivery is confirmed", priority: "decision" },
   { key: "stockState", label: "Availability", kind: "stock", hint: "What the retailer shows right now", priority: "decision" },
   { key: "condition", label: "Condition", kind: "condition", hint: "New, refurbished or used", priority: "decision" },
-  { key: "warrantyMonths", label: "Manufacturer warranty", kind: "number", hint: "Months", priority: "decision" },
-  { key: "bundleItems", label: "Included extras", kind: "list", hint: "Comma-separated promotional items; blank means Unknown", priority: "decision" },
-  { key: "sellerType", label: "Who sells it?", kind: "sellerType", hint: "Direct retailer or marketplace seller", priority: "decision" },
-  { key: "membershipRequired", label: "Paid membership needed?", kind: "yesno", hint: "Whether everyone can access this price", priority: "decision" },
-  { key: "observedAt", label: "Checked at", kind: "datetime", hint: "When you last saw this price and stock", priority: "decision" },
+  { key: "warrantyMonths", label: "Warranty (months)", kind: "number", hint: "How many months of manufacturer warranty", priority: "decision" },
+  { key: "bundleItems", label: "Extras in the box", kind: "list", hint: "Comma-separated promotional items; blank means Unknown", priority: "decision" },
+  { key: "sellerType", label: "Seller type", kind: "sellerType", hint: "Direct retailer or marketplace seller", priority: "decision" },
+  { key: "membershipRequired", label: "Members-only price?", kind: "yesno", hint: "Whether everyone can access this price", priority: "decision" },
+  { key: "observedAt", label: "Last checked", kind: "datetime", hint: "When you last saw this price and stock", priority: "decision" },
   { key: "sellerName", label: "Seller name", kind: "text", hint: "The business fulfilling the order", priority: "details" },
   { key: "retailerId", label: "Retailer", kind: "retailer", hint: "The website where this offer appears", priority: "details" },
 ];
@@ -261,15 +261,15 @@ export function EvidenceLensClient({ comparisonId }: { comparisonId: string }) {
     <section className="surface overflow-hidden" aria-labelledby="active-offer-heading">
       <SourceContext side={activeSide} title={titles[activeSide]} record={activeRecord} pending={pendingCount} unknown={unknownCount} conflicts={conflictCount} reviewed={activeReviewed} />
       <div className="bg-white p-4 sm:p-5">
-        <div className="flex items-center justify-between gap-3"><div><h3 className="font-semibold">At a glance</h3><p className="mt-0.5 text-xs leading-5 text-slate-500">Every fact confirmed by the button below is shown here.</p></div><span className="shrink-0 text-xs font-semibold text-slate-500">12 deciding facts</span></div>
+        <div className="flex items-center justify-between gap-3"><div><h3 className="font-semibold">At a glance</h3><p className="mt-0.5 text-xs leading-5 text-slate-500">Every fact confirmed by the button below is shown here.</p></div><span className="shrink-0 text-xs font-semibold text-slate-500">12 key details</span></div>
         <EvidenceSummary record={activeRecord} />
       </div>
-      <div className="border-t border-slate-200 bg-slate-50 p-4 sm:flex sm:items-center sm:justify-between sm:gap-4 sm:p-5"><p className="text-sm leading-6 text-slate-600">If this summary matches the offer, confirm it once. You can still edit any detail below.</p>{activeReviewed ? <span className="mt-3 inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-emerald-100 px-4 text-sm font-bold text-emerald-800 sm:mt-0"><Check size={17} />Offer checked</span> : <button type="button" className="button-primary mt-3 shrink-0 sm:mt-0" onClick={() => confirmOffer(activeSide)}><ShieldCheck size={17} />Confirm this offer</button>}</div>
-      <details className="group border-t border-slate-200 bg-white"><summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-semibold sm:px-5"><span>Edit or inspect all evidence</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600 group-open:bg-blue-50 group-open:text-blue-700">{fields.length} facts</span></summary><div className="grid gap-px border-t border-slate-200 bg-slate-200 sm:grid-cols-2">{fields.map((definition) => <EvidenceInput key={definition.key} side={activeSide} definition={definition} field={activeRecord[definition.key]} retailerOptions={retailerOptions} onChange={(value) => setField(activeSide, definition.key, value, definition.kind)} onConfirm={() => confirmField(activeSide, definition.key)} />)}</div></details>
+      <div className="border-t border-slate-200 bg-slate-50 p-4 sm:flex sm:items-center sm:justify-between sm:gap-4 sm:p-5"><p className="text-sm leading-6 text-slate-600">If this summary matches the offer, confirm it once. You can still edit any detail below.</p>{activeReviewed ? <span className="mt-3 inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-emerald-100 px-4 text-sm font-bold text-emerald-800 sm:mt-0"><Check size={17} />Confirmed</span> : <button type="button" className="button-primary mt-3 shrink-0 sm:mt-0" onClick={() => confirmOffer(activeSide)}><ShieldCheck size={17} />Looks correct</button>}</div>
+      <details className="group border-t border-slate-200 bg-white"><summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-semibold sm:px-5"><span>See all details</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600 group-open:bg-blue-50 group-open:text-blue-700">{fields.length} facts</span></summary><div className="grid gap-px border-t border-slate-200 bg-slate-200 sm:grid-cols-2">{fields.map((definition) => <EvidenceInput key={definition.key} side={activeSide} definition={definition} field={activeRecord[definition.key]} retailerOptions={retailerOptions} onChange={(value) => setField(activeSide, definition.key, value, definition.kind)} onConfirm={() => confirmField(activeSide, definition.key)} />)}</div></details>
     </section>
 
     {submitError && <ErrorState message={submitError.message} requestId={submitError.requestId} />}
-    <div className="mobile-action-dock"><div className="action-panel surface flex items-center justify-between gap-3 p-4"><div><p className="text-sm font-semibold">{reviewedSides.length} of 2 checked</p><p className="mobile-action-copy mt-0.5 text-xs leading-5 text-slate-500">Unknown facts stay visible and produce an honest uncertain result.</p></div><button type="button" aria-label="Compare product identity" className="button-primary shrink-0" disabled={reviewedSides.length < 2 || busy} onClick={continueJourney}>{busy ? "Saving…" : <><span className="sm:hidden">Compare identity</span><span className="hidden sm:inline">Compare product identity</span></>}<ArrowRight size={17} /></button></div></div>
+    <div className="mobile-action-dock"><div className="action-panel surface flex items-center justify-between gap-3 p-4"><div><p className="text-sm font-semibold">{reviewedSides.length} of 2 checked</p><p className="mobile-action-copy mt-0.5 text-xs leading-5 text-slate-500">Missing details stay visible — they won&apos;t be hidden or assumed.</p></div><button type="button" aria-label="Compare product identity" className="button-primary shrink-0" disabled={reviewedSides.length < 2 || busy} onClick={continueJourney}>{busy ? "Saving…" : <><span className="sm:hidden">Next</span><span className="hidden sm:inline">Next: are they the same product?</span></>}<ArrowRight size={17} /></button></div></div>
     <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between"><Link href={`/offer-dock?comparisonId=${comparisonId}`} className="button-secondary"><ArrowLeft size={17} />Back to offers</Link><button type="button" className="button-ghost text-rose-700" disabled={busy} onClick={removeComparison}><Trash2 size={16} />Delete comparison</button></div>
   </div>;
 }
@@ -280,8 +280,8 @@ function OfferTab({ label, number, active, reviewed, tone, onClick }: { label: s
 }
 
 function EvidenceSummary({ record }: { record: EvidenceRecord }) {
-  const groups: Array<{ title: string; facts: Array<{ key: EvidenceKey; label: string; kind: FieldKind }> }> = [
-    { title: "Product identity", facts: [
+  const groups: Array<{ title: string; icon: typeof Package; facts: Array<{ key: EvidenceKey; label: string; kind: FieldKind }> }> = [
+    { title: "Product identity", icon: Package, facts: [
       { key: "manufacturerModel", label: "Model", kind: "text" },
       { key: "gtin", label: "Barcode", kind: "text" },
       { key: "regionalSuffix", label: "Region", kind: "text" },
@@ -289,18 +289,18 @@ function EvidenceSummary({ record }: { record: EvidenceRecord }) {
       { key: "warrantyMonths", label: "Warranty", kind: "number" },
       { key: "bundleItems", label: "Extras", kind: "list" },
     ] },
-    { title: "Price and availability", facts: [
+    { title: "Price and availability", icon: DollarSign, facts: [
       { key: "priceCents", label: "Price", kind: "money" },
       { key: "deliveryCostCents", label: "Delivery", kind: "money" },
       { key: "stockState", label: "Stock", kind: "stock" },
       { key: "observedAt", label: "Checked", kind: "datetime" },
     ] },
-    { title: "Seller access", facts: [
+    { title: "Where to buy", icon: Store, facts: [
       { key: "sellerType", label: "Seller", kind: "sellerType" },
       { key: "membershipRequired", label: "Membership", kind: "yesno" },
     ] },
   ];
-  return <div className="mt-3 grid gap-2 lg:grid-cols-3">{groups.map((group) => <section key={group.title} className="rounded-xl bg-slate-50 p-3"><h4 className="text-xs font-bold text-slate-700">{group.title}</h4><dl className="mt-2 flex flex-wrap gap-x-3 gap-y-1.5">{group.facts.map((fact) => <div key={fact.key} className="min-w-0 text-xs"><dt className="inline text-slate-500">{fact.label}: </dt><dd className="inline break-words font-semibold capitalize text-slate-950">{summaryValue(record[fact.key], fact.kind)}</dd></div>)}</dl></section>)}</div>;
+  return <div className="mt-3 grid gap-2 lg:grid-cols-3">{groups.map((group) => { const Icon = group.icon; return <section key={group.title} className="rounded-xl bg-slate-50 p-3"><h4 className="flex items-center gap-1.5 text-xs font-bold text-slate-700"><Icon size={13} />{group.title}</h4><dl className="mt-2 flex flex-wrap gap-x-3 gap-y-1.5">{group.facts.map((fact) => <div key={fact.key} className="min-w-0 text-sm"><dt className="inline text-slate-500">{fact.label}: </dt><dd className="inline break-words font-semibold capitalize text-slate-950">{summaryValue(record[fact.key], fact.kind)}</dd></div>)}</dl></section>; })}</div>;
 }
 
 function summaryValue(field: EvidenceField<EvidenceValue> | undefined, kind: FieldKind) {
@@ -317,9 +317,9 @@ function SourceContext({ side, title, record, pending, unknown, conflicts, revie
   const source = Object.values(record).flatMap((field) => field.sources).at(-1);
   const sourceReference = source?.reference;
   const sourceTime = source?.observedAt;
-  const status = reviewed ? "Offer checked" : conflicts ? `${conflicts} conflict${conflicts === 1 ? "" : "s"}` : `${pending} to review${unknown ? ` · ${unknown} unknown` : ""}`;
+  const status = reviewed ? "Confirmed" : conflicts ? `${conflicts} conflict${conflicts === 1 ? "" : "s"}` : `${pending} to check${unknown ? ` · ${unknown} not found` : ""}`;
   return <div className={`flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-start sm:justify-between sm:p-5 ${side === "target" ? "border-violet-200 bg-violet-50" : "border-blue-200 bg-blue-50"}`}>
-    <div className="min-w-0"><p className="text-xs font-bold uppercase tracking-[.15em] text-slate-500">{side === "target" ? "Product I want" : "Lower-price offer"}</p><h2 id="active-offer-heading" tabIndex={-1} className="mt-1 text-lg font-semibold outline-none sm:text-xl">{title}</h2><div className="mt-2 flex flex-wrap gap-2 text-xs"><span className="rounded-full bg-white px-2.5 py-1.5 font-semibold"><Database className="mr-1 inline" size={13} />{source?.type ?? "Unknown source"}</span>{sourceTime && <span className="rounded-full bg-white px-2.5 py-1.5 font-semibold"><Clock3 className="mr-1 inline" size={13} />Seen {new Date(sourceTime).toLocaleString("en-AU")}</span>}{sourceReference && /^https?:/.test(sourceReference) && <a className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1.5 font-semibold text-blue-800 underline" href={sourceReference} target="_blank" rel="noreferrer">Source<ExternalLink size={13} /></a>}</div></div>
+    <div className="min-w-0"><p className="text-xs font-bold uppercase tracking-[.15em] text-slate-500">{side === "target" ? "Product I want" : "Lower-price offer"}</p><h2 id="active-offer-heading" tabIndex={-1} className="mt-1 text-lg font-semibold outline-none sm:text-xl">{title}</h2><div className="mt-2 flex flex-wrap gap-2 text-xs"><span className="rounded-full bg-white px-2.5 py-1.5 font-semibold"><Database className="mr-1 inline" size={13} />{source?.type === "dataset" ? "Sample data" : source?.type === "manual" ? "Manual entry" : source?.type ?? "Unknown source"}</span>{sourceTime && <span className="rounded-full bg-white px-2.5 py-1.5 font-semibold"><Clock3 className="mr-1 inline" size={13} />Seen {new Date(sourceTime).toLocaleString("en-AU")}</span>}{sourceReference && /^https?:/.test(sourceReference) && <a className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1.5 font-semibold text-blue-800 underline" href={sourceReference} target="_blank" rel="noreferrer">Source<ExternalLink size={13} /></a>}</div></div>
     <span className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${reviewed ? "bg-emerald-100 text-emerald-800" : conflicts ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-900"}`}>{reviewed ? <Check size={14} /> : conflicts ? <AlertTriangle size={14} /> : <CircleHelp size={14} />}{status}</span>
   </div>;
 }
@@ -342,6 +342,6 @@ function EvidenceInput({ side, definition, field, retailerOptions, onChange, onC
   return <div className="min-w-0 bg-white p-4">
     <div className="flex items-start justify-between gap-3"><label htmlFor={`${side}-${definition.key}`} className="min-w-0"><span className="block text-sm font-semibold">{definition.label}</span><span className="mt-0.5 block text-xs leading-5 text-slate-500">{definition.hint}</span></label><span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[11px] font-bold ${field?.state === "conflicting" ? "bg-rose-100 text-rose-800" : !field || field.state === "unknown" ? "bg-amber-100 text-amber-800" : trusted ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"}`}>{field?.state === "conflicting" ? <AlertTriangle size={12} /> : !field || field.state === "unknown" ? <CircleHelp size={12} /> : trusted ? <Check size={12} /> : source === "manual" ? <Pencil size={12} /> : <Database size={12} />}{field?.state === "conflicting" ? "Conflict" : !field || field.state === "unknown" ? "Unknown" : trusted ? "Confirmed" : "Review"}</span></div>
     <div className="mt-3">{options ? <ResponsiveSelect id={`${side}-${definition.key}`} value={value} onChange={onChange} options={options} /> : <input id={`${side}-${definition.key}`} className="field" type={definition.kind === "datetime" ? "datetime-local" : definition.kind === "money" || definition.kind === "number" ? "number" : "text"} min={definition.kind === "money" || definition.kind === "number" ? 0 : undefined} step={definition.kind === "money" ? "0.01" : definition.kind === "number" ? "1" : undefined} inputMode={definition.kind === "money" || definition.kind === "number" ? "decimal" : undefined} value={value} onChange={(event) => onChange(event.target.value)} />}</div>
-    {field?.value !== null && field?.value !== undefined && field.state !== "conflicting" && !trusted && <button type="button" className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-lg px-2 text-xs font-bold text-blue-700 hover:bg-blue-50" onClick={onConfirm}><ShieldCheck size={14} />Confirm this fact</button>}
+    {field?.value !== null && field?.value !== undefined && field.state !== "conflicting" && !trusted && <button type="button" className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-lg px-2 text-xs font-bold text-blue-700 hover:bg-blue-50" onClick={onConfirm}><ShieldCheck size={14} />Looks correct</button>}
   </div>;
 }

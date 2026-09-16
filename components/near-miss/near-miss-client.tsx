@@ -12,14 +12,14 @@ import { getCatalogueDraft, getDecisionDraft, getDraft, saveCatalogueDraft, save
 import type { Comparison, Decision, NearMissSuggestion, RuleOutcome } from "@/models/domain";
 
 const constraintLabels: Record<string, string> = {
-  exact_identity: "Exact commercial identity",
+  exact_identity: "Same product",
   new_condition: "New condition",
-  manufacturer_warranty: "Manufacturer warranty",
+  manufacturer_warranty: "Full warranty",
   same_bundle: "Same bundle",
   delivery: "Delivery",
   pickup: "Pickup",
   lowest_total: "Lowest delivered total",
-  fresh_evidence: "Current price and stock",
+  fresh_evidence: "Recent price and stock",
 };
 
 export function NearMissClient({ comparisonId }: { comparisonId: string }) {
@@ -89,7 +89,7 @@ export function NearMissClient({ comparisonId }: { comparisonId: string }) {
 
   if (error && !comparison) return <ErrorState message={error.message} requestId={error.requestId} onRetry={load} />;
   if (!comparison || !decision || !catalogue) return <LoadingState label="Testing the smallest safe changes" />;
-  if (decision.status === "verified" || decision.status === "likely") return <div className="space-y-5"><section className="surface overflow-hidden"><div className="bg-emerald-50 p-6 text-center sm:p-8"><span className="mx-auto grid size-12 place-items-center rounded-full bg-emerald-600 text-white"><Check size={24} /></span><p className="mt-4 text-xs font-bold uppercase tracking-[.14em] text-emerald-700">No fix needed</p><h2 className="mt-2 text-2xl font-semibold">This offer can move straight to a passport</h2><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-600">The latest decision is already {decision.status}. There is no honest near-miss to repair.</p><Link href={`/passport/${comparisonId}`} className="button-primary mt-5">Open the passport<ArrowRight size={17} /></Link></div></section><Link href={`/identity-bridge/${comparisonId}`} className="button-secondary"><ArrowLeft size={17} />Back to result</Link></div>;
+  if (decision.status === "verified" || decision.status === "likely") return <div className="space-y-5"><section className="surface overflow-hidden"><div className="bg-emerald-50 p-6 text-center sm:p-8"><span className="mx-auto grid size-12 place-items-center rounded-full bg-emerald-600 text-white"><Check size={24} /></span><p className="mt-4 text-xs font-bold uppercase tracking-[.14em] text-emerald-700">No fix needed</p><h2 className="mt-2 text-2xl font-semibold">This offer already qualifies</h2><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-600">All checks pass — you can go straight to creating your proof.</p><Link href={`/passport/${comparisonId}`} className="button-primary mt-5">Create your proof<ArrowRight size={17} /></Link></div></section><Link href={`/identity-bridge/${comparisonId}`} className="button-secondary"><ArrowLeft size={17} />Back to result</Link></div>;
 
   const blocking = decision.policyChecks.filter((item) => item.result !== "pass");
   const best = available[0];

@@ -3,12 +3,12 @@ import { Check } from "lucide-react";
 import type { ReactNode } from "react";
 import type { JourneyStage } from "@/models/domain";
 
-const stages: Array<{ id: JourneyStage; label: string; path: string }> = [
-  { id: "offer_dock", label: "Offers", path: "offer-dock" },
-  { id: "evidence_lens", label: "Evidence", path: "evidence-lens" },
-  { id: "identity_bridge", label: "Same product?", path: "identity-bridge" },
-  { id: "near_miss", label: "Fix if needed", path: "near-miss" },
-  { id: "passport", label: "Passport", path: "passport" },
+const stages: Array<{ id: JourneyStage; label: string; path: string; hint: string }> = [
+  { id: "offer_dock", label: "Offers", path: "offer-dock", hint: "Pick two offers" },
+  { id: "evidence_lens", label: "Evidence", path: "evidence-lens", hint: "Review the facts" },
+  { id: "identity_bridge", label: "Same product?", path: "identity-bridge", hint: "Compare identity" },
+  { id: "near_miss", label: "Fix if needed", path: "near-miss", hint: "Find the closest option" },
+  { id: "passport", label: "Passport", path: "passport", hint: "Ready to show" },
 ];
 
 export function JourneyShell({ stage, comparisonId, eyebrow, title, description, children }: {
@@ -30,17 +30,61 @@ export function JourneyShell({ stage, comparisonId, eyebrow, title, description,
         <div className="h-1.5 overflow-hidden rounded-full bg-slate-200 sm:hidden" aria-hidden="true">
           <div className="h-full rounded-full bg-blue-600 transition-[width]" style={{ width: `${((activeIndex + 1) / stages.length) * 100}%` }} />
         </div>
-        <ol className="hidden grid-cols-5 gap-3 sm:grid">
+
+        {/* Desktop stepper with connecting rail */}
+        <ol className="hidden sm:grid sm:grid-cols-5 sm:gap-3">
           {stages.map((item, index) => {
             const completed = index < activeIndex;
             const active = index === activeIndex;
+            const future = index > activeIndex;
             const canVisit = Boolean(comparisonId) && index <= activeIndex;
-            const content = <><span className={`grid size-7 shrink-0 place-items-center rounded-full text-xs font-bold sm:size-8 ${active ? "bg-blue-600 text-white" : completed ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"}`}>{completed ? <Check aria-hidden="true" size={14} /> : index + 1}</span><span className="sr-only sm:not-sr-only sm:text-xs sm:font-semibold sm:text-slate-600">{item.label}</span></>;
             const href = item.id === "offer_dock"
               ? `/offer-dock?comparisonId=${comparisonId}`
               : `/${item.path}/${comparisonId}`;
-            return <li key={item.id} className="min-w-0">{canVisit ? <Link href={href} aria-current={active ? "step" : undefined} className="flex min-h-11 items-center justify-center gap-2 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:justify-start">{content}</Link> : <span aria-current={active ? "step" : undefined} className="flex min-h-11 items-center justify-center gap-2 sm:justify-start">{content}</span>}</li>;
+
+            const circle = (
+              <span className={`relative grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold transition-all duration-200 ${
+                active
+                  ? "bg-blue-600 text-white stepper-active"
+                  : completed
+                    ? "bg-emerald-100 text-emerald-800"
+                    : "bg-slate-100 text-slate-500"
+              }`}>
+                {completed ? <Check aria-hidden="true" size={14} className="stepper-check" /> : index + 1}
+              </span>
+            );
+
+            const label = (
+              <span className={`text-xs font-semibold transition-colors duration-200 ${
+                active ? "text-blue-700" : completed ? "text-emerald-700" : "text-slate-500"
+              }`}>{item.label}</span>
+            );
+
+            const inner = <>{circle}{label}</>;
+
+            return (
+              <li key={item.id} className={`group relative min-w-0 ${future ? "opacity-50" : ""}`}>
+                {canVisit ? (
+                  <Link
+                    href={href}
+                    aria-current={active ? "step" : undefined}
+                    className="flex min-h-11 items-center justify-center gap-2 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:justify-start"
+                  >
+                    {inner}
+                    {/* Hover tooltip */}
+                    <span className="pointer-events-none absolute -bottom-8 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100" aria-hidden="true">
+                      {item.hint}
+                    </span>
+                  </Link>
+                ) : (
+                  <span aria-current={active ? "step" : undefined} className="flex min-h-11 items-center justify-center gap-2 sm:justify-start">
+                    {inner}
+                  </span>
+                )}
+              </li>
+            );
           })}
+
         </ol>
       </nav>
       <header className="mb-5 max-w-3xl sm:mb-7">
