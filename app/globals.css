@@ -28,4 +28,6 @@ details[open] > .list-none::after { margin-top: .2rem; transform: rotate(225deg)
   .mobile-action-dock .action-panel { border: 0; background: transparent; padding: 0; box-shadow: none; }
   .mobile-action-copy { display: none; }
 }
+.hero-shimmer::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%); animation: hero-sweep .9s ease-out forwards; }
+@keyframes hero-sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
