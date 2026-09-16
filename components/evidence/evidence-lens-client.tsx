@@ -226,7 +226,7 @@ export function EvidenceLensClient({ comparisonId }: { comparisonId: string }) {
   }
 
   async function removeComparison() {
-    if (!window.confirm("Delete this comparison and its saved evidence from this device and the prototype server?")) return;
+    if (!window.confirm("Delete this comparison and all its saved evidence?")) return;
     setBusy(true);
     setSubmitError(undefined);
     try {
@@ -296,8 +296,10 @@ function EvidenceSummary({ record }: { record: EvidenceRecord }) {
       { key: "observedAt", label: "Checked", kind: "datetime" },
     ] },
     { title: "Where to buy", icon: Store, facts: [
-      { key: "sellerType", label: "Seller", kind: "sellerType" },
-      { key: "membershipRequired", label: "Membership", kind: "yesno" },
+      { key: "sellerName", label: "Store", kind: "text" },
+      { key: "retailerId", label: "Website", kind: "retailer" },
+      { key: "sellerType", label: "Type", kind: "sellerType" },
+      { key: "membershipRequired", label: "Members only", kind: "yesno" },
     ] },
   ];
   return <div className="mt-3 grid gap-2 lg:grid-cols-3">{groups.map((group) => { const Icon = group.icon; return <section key={group.title} className="rounded-xl bg-slate-50 p-3"><h4 className="flex items-center gap-1.5 text-xs font-bold text-slate-700"><Icon size={13} />{group.title}</h4><dl className="mt-2 flex flex-wrap gap-x-3 gap-y-1.5">{group.facts.map((fact) => <div key={fact.key} className="min-w-0 text-sm"><dt className="inline text-slate-500">{fact.label}: </dt><dd className="inline break-words font-semibold capitalize text-slate-950">{summaryValue(record[fact.key], fact.kind)}</dd></div>)}</dl></section>; })}</div>;

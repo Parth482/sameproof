@@ -418,7 +418,7 @@ export function HeroSection() {
             </a>
           </div>
           <p className="mt-4 text-sm text-slate-500">
-            Prototype data is simulated and clearly labelled. No account
+            Sample data is simulated and clearly labelled. No account
             required.
           </p>
         </div>

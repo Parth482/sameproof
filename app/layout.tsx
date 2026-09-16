@@ -19,7 +19,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AppHeader />
           <div id="main-content" tabIndex={-1} className="flex flex-1 flex-col outline-none">{children}</div>
           <footer className="border-t border-slate-200 bg-white px-4 py-5 text-center text-xs leading-5 text-slate-500">
-            SameProof provides explainable prototype guidance. Final approval remains with the retailer.
+            SameProof explains the evidence. Final approval remains with the retailer.
           </footer>
         </div>
         <ServiceWorkerRegistration />

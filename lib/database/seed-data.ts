@@ -229,7 +229,7 @@ const commonPredicates: PolicyPredicate[] = [
   requiredPredicate("IDENTITY_EXACT", "identity.status", "exact", "The commercial identity is exact.", "The products are not commercially identical.", "Exact commercial identity cannot be confirmed."),
   requiredPredicate("TARGET_STOCK", "target.stockState", "in_stock", "The target retailer has stock.", "The target retailer does not have immediate stock.", "Target retailer stock is unknown."),
   requiredPredicate("COMPETITOR_STOCK", "competitor.stockState", "in_stock", "The competitor has immediate stock.", "The competing offer is not currently in stock.", "Competitor stock is unknown."),
-  requiredPredicate("SELLER_ELIGIBLE", "competitor.sellerType", "retailer", "The offer is sold directly by an eligible retailer.", "Marketplace sellers are excluded from this prototype policy.", "The seller type is unknown."),
+  requiredPredicate("SELLER_ELIGIBLE", "competitor.sellerType", "retailer", "The offer is sold directly by an eligible retailer.", "Marketplace sellers are excluded from this policy.", "The seller type is unknown."),
   requiredPredicate("CONDITION_NEW", "competitor.condition", "new", "The competing item is new.", "Refurbished or used products are excluded.", "The product condition is unknown."),
   requiredPredicate("PUBLIC_PRICE", "competitor.membershipRequired", false, "The price is publicly available.", "The lower price requires a membership condition.", "The price conditions are unknown."),
   {
@@ -249,7 +249,7 @@ export const policyVersions: PolicyVersion[] = [
   {
     id: "policy-officeworks-2026-07",
     retailerId: "ret-officeworks",
-    name: "Officeworks Price Beat Guarantee - prototype interpretation",
+    name: "Officeworks Price Beat Guarantee",
     effectiveFrom: "2026-07-01T00:00:00.000Z",
     sourceUrl: retailers[0].policyUrl!,
     reviewedAt: "2026-09-14T00:00:00.000Z",
@@ -262,7 +262,7 @@ export const policyVersions: PolicyVersion[] = [
   {
     id: "policy-jb-2026-09",
     retailerId: "ret-jb",
-    name: "JB Hi-Fi price match - prototype interpretation",
+    name: "JB Hi-Fi Price Match",
     effectiveFrom: "2026-09-01T00:00:00.000Z",
     sourceUrl: retailers[1].policyUrl!,
     reviewedAt: "2026-09-14T00:00:00.000Z",
